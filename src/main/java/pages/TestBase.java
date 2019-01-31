@@ -1,0 +1,90 @@
+package pages;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
+
+import util.TestUtil;
+import util.WebEventListener;
+
+public class TestBase {
+	
+	public static Properties prop;
+	public static WebDriver driver;
+	
+	public static EventFiringWebDriver e_driver;
+	public static WebEventListener webEventListner;
+	
+	
+	public TestBase() {
+	
+		try {
+			prop = new Properties();
+			
+			FileInputStream fip = new FileInputStream(System.getProperty("user.dir")+"/src/main/java"+
+															"/config/config.properties");
+			
+			prop.load(fip);
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
+	}
+	
+	
+	public static void loadBrowser() {
+		
+		String browserName = prop.getProperty("browser");
+		
+	
+		if (browserName.equalsIgnoreCase("Chrome")) {
+			System.setProperty("webdriver.chrome.driver",System.getProperty("user.dir")+ "\\Drivers\\ChromeDriver\\chromedriver.exe");
+			
+			driver = new ChromeDriver();
+
+	     
+		}
+		if (browserName.equalsIgnoreCase("Firefox")) {
+			System.setProperty("webdriver.gecko.driver", System.getProperty("user.dir")+ "\\Drivers\\FireFoxDriverDriver\\geckodriver.exe");
+			
+			driver = new FirefoxDriver();
+			
+		}
+		
+		
+		//// Now create object of EventListerHandler to register it with EventFiringWebDriver
+		webEventListner = new WebEventListener();
+		e_driver = new EventFiringWebDriver(driver);
+		e_driver.register(webEventListner);
+		driver = e_driver;
+		
+		//set timeouts and window properties
+		
+		driver.manage().window().maximize();
+		driver.manage().deleteAllCookies();
+		
+		driver.manage().timeouts().pageLoadTimeout(TestUtil.pageLoadTimeout, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(TestUtil.implicitWaitTimeout, TimeUnit.SECONDS);
+		
+		driver.get(prop.getProperty("url"));
+		
+		
+	}
+	
+
+}
