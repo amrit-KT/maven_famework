@@ -32,11 +32,14 @@ public class TestUtil extends TestBase {
 	
 	
 	
-	public static void takeScreenshotAtEndOfTest() throws IOException {
+	public static String takeScreenshotAtEndOfTest() throws IOException {
 		
 		File srcFile = ( (TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
 		
-		Files.copy(srcFile, new File(System.getProperty("user.dir")+"/screenshots/"+System.currentTimeMillis()+".png"));
+		String destination = System.getProperty("user.dir")+"/screenshots/"+System.currentTimeMillis()+".png";
+		Files.copy(srcFile,new File(destination));
+		
+		return destination;
 			
 	}
 	

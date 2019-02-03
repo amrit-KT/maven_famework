@@ -3,17 +3,17 @@ package pages;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
 import util.TestUtil;
 import util.WebEventListener;
 
@@ -24,6 +24,12 @@ public class TestBase {
 	
 	public static EventFiringWebDriver e_driver;
 	public static WebEventListener webEventListner;
+	
+	
+	public ExtentReports extent;
+	public ExtentTest extentTest;
+	
+	
 	
 	
 	public TestBase() {
@@ -86,5 +92,18 @@ public class TestBase {
 		
 	}
 	
+	public void setExtent(){
+		extent = new ExtentReports(System.getProperty("user.dir")+"/test-output/ExtentReport.html", true);
+		extent.addSystemInfo("Host Name", "Amritesh");
+		extent.addSystemInfo("User Name", "Amritesh");
+		extent.addSystemInfo("Environment", "QA");
+		
+	}
+	public void endReport(){
+		extent.flush();
+		extent.close(); 
+	}
+
+
 
 }
